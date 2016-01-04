@@ -10,6 +10,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.Iterator;
 
 public class Server {
@@ -69,45 +71,52 @@ public class Server {
 				if(key.isAcceptable())
 				{
 					System.out.println("Key is Acceptable");
-					this.accept(key);
-					continue;
+					 ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
+					 SocketChannel socket = (SocketChannel) ssc.accept();
+					 socket.configureBlocking(false);
+					 socket.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+					 continue;
 				}
 				else if (key.isReadable())
 				{
 					System.out.println("Key is Readable");
-					this.read(key);
+					SocketChannel clientChannel = (SocketChannel) key.channel();
+					this.doEcho("readable", clientChannel);
 					continue;
 				}
 				else if (key.isWritable())
 				{
 					System.out.println("Key is Writable");
-					this.write(key);
+					SocketChannel clientChannel = (SocketChannel) key.channel();
+					this.doEcho("writable", clientChannel);
 					continue;
 				}
 			}
 		}
 	}
 	
-	private void write(SelectionKey key) throws IOException {
-		SocketChannel socket = (SocketChannel) key.channel();
-		byte [] message = new String(messages).getBytes();
-		ByteBuffer buffer = ByteBuffer.wrap(message);
-		int nBytes = socket.write(buffer);
-		buffer.clear();
-		
+	public void doEcho(String evt, SocketChannel socket) throws IOException {
+		String msg = this.readMessage(socket);
+		if (msg.length() <= 0) return;
+		if (msg.trim().equals("quit")) socket.close();
+		else if (msg.length() > 0) {
+			System.out.println("key is " + evt + " -> " + msg.trim());
+			this.writeMessage(socket, msg);
+		}
 	}
-	private void read(SelectionKey key) throws IOException {
-		SocketChannel socket = (SocketChannel) key.channel();
-		ByteBuffer buffer = ByteBuffer.allocate(512);
-		socket.read(buffer);
-		String output = new String(buffer.array()).trim();
-		System.out.println("Message read from client: " + output);
-		if(output.equals("coucou"))
-		{
-			System.out.println("Client send coucou !");
-			this.write(key);
-		}		
-	}
+	public void writeMessage(SocketChannel socket, String msg) throws IOException {
+		  ByteBuffer buffer = ByteBuffer.wrap((msg.getBytes()));
+		  int nBytes = socket.write(buffer);
+		}
+	public String readMessage(SocketChannel socket) throws IOException {
+		  ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
+		  int nBytes = socket.read(rcvbuf);
+		  rcvbuf.flip();
+		  Charset charset = Charset.forName("us-ascii");
+		  CharsetDecoder decoder = charset.newDecoder();
+		  String res = decoder.decode(rcvbuf).toString();
+		  return res;
+		}
 	private void accept(SelectionKey key) throws IOException {
 		ServerSocketChannel ssc = (ServerSocketChannel)key.channel();
 		SocketChannel socket = (SocketChannel)ssc.accept();
