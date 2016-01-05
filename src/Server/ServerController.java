@@ -22,20 +22,21 @@ public class ServerController
 	public ServerController() 
 	{
 		this.values = new int[SIZE][SIZE];
-		model = new Game();
+		this.model = new Game();
+		this.index = 0;
 	}
 
 	private void addClient() 
 	{
 		//initialise the grid for the new client)
-		clientsGrid.put(index, new Grid());
-		model.addRandomTile(clientsGrid.get(index));
-		model.addRandomTile(clientsGrid.get(index));
+		clientsGrid.put(this.index, new Grid());
+		model.addRandomTile(clientsGrid.get(this.index));
+		model.addRandomTile(clientsGrid.get(this.index));
 		
 		
 		
-		sendInit(index);
-		index++;
+		sendInit(this.index);
+		this.index++;
 	}
 
 	private void sendInit(int index) 
