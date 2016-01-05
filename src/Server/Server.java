@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -62,35 +63,47 @@ public class Server {
 			{
 				SelectionKey key = it.next();
 				it.remove();
-				
-				if(!key.isValid())
-				{
-					continue;
+				try {
+					if(!key.isValid())
+					{
+						System.out.println("Key is not valid...");
+						continue;
+					}
+					
+					if(key.isAcceptable())
+					{
+						System.out.println("Key is Acceptable");
+						 ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
+						 SocketChannel socket = (SocketChannel) ssc.accept();
+						 socket.configureBlocking(false);
+						 socket.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+						 continue;
+					}
+					
+					if (key.isReadable())
+					{
+						System.out.println("Key is Readable");
+						
+						SocketChannel clientChannel = (SocketChannel) key.channel();
+						this.doEcho("readable", clientChannel);
+						
+						continue;
+					}
+					
+					if (key.isWritable())
+					{
+						System.out.println("Key is Writable");
+						
+						SocketChannel clientChannel = (SocketChannel) key.channel();
+						this.doEcho("writable", clientChannel);
+						
+						continue;
+					}
+				} catch (CancelledKeyException e) {
+					e.printStackTrace();
+					key.channel().close();
 				}
 				
-				if(key.isAcceptable())
-				{
-					System.out.println("Key is Acceptable");
-					 ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
-					 SocketChannel socket = (SocketChannel) ssc.accept();
-					 socket.configureBlocking(false);
-					 socket.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-					 continue;
-				}
-				else if (key.isReadable())
-				{
-					System.out.println("Key is Readable");
-					SocketChannel clientChannel = (SocketChannel) key.channel();
-					this.doEcho("readable", clientChannel);
-					continue;
-				}
-				else if (key.isWritable())
-				{
-					System.out.println("Key is Writable");
-					SocketChannel clientChannel = (SocketChannel) key.channel();
-					this.doEcho("writable", clientChannel);
-					continue;
-				}
 			}
 		}
 	}
@@ -99,9 +112,9 @@ public class Server {
 		String msg = this.readMessage(socket);
 		if (msg.length() <= 0) return;
 		if (msg.trim().equals("quit")) socket.close();
-		else if (msg.length() > 0) {
+		if (msg.trim().equals("Time goes fast.")) {
 			System.out.println("key is " + evt + " -> " + msg.trim());
-			this.writeMessage(socket, msg);
+			this.writeMessage(socket, "Blabla");
 		}
 	}
 	public void writeMessage(SocketChannel socket, String msg) throws IOException {
@@ -117,12 +130,6 @@ public class Server {
 		  String res = decoder.decode(rcvbuf).toString();
 		  return res;
 		}
-	private void accept(SelectionKey key) throws IOException {
-		ServerSocketChannel ssc = (ServerSocketChannel)key.channel();
-		SocketChannel socket = (SocketChannel)ssc.accept();
-		socket.configureBlocking(false);
-		socket.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-	}
 	
 	public static void main(String[] args)
 	{

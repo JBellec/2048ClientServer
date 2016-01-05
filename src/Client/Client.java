@@ -1,6 +1,8 @@
 package Client;
 
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -30,7 +32,14 @@ public class Client {
             buffer.clear();
             Thread.sleep(3000);
         }
-
-        client.close();				
+        
+        // lecture sur la socketchannel
+        ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
+		  int nBytes = client.read(rcvbuf);
+		  rcvbuf.flip();
+		  Charset charset = Charset.forName("us-ascii");
+		  CharsetDecoder decoder = charset.newDecoder();
+		  String res = decoder.decode(rcvbuf).toString();
+		  System.out.println(res);
     }
 }
