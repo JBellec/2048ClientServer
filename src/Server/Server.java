@@ -66,13 +66,13 @@ public class Server {
 				try {
 					if(!key.isValid())
 					{
-						System.out.println("Key is not valid...");
+						//System.out.println("Key is not valid...");
 						continue;
 					}
 					
 					if(key.isAcceptable())
 					{
-						System.out.println("Key is Acceptable");
+						//System.out.println("Key is Acceptable");
 						 ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
 						 SocketChannel socket = (SocketChannel) ssc.accept();
 						 socket.configureBlocking(false);
@@ -82,7 +82,7 @@ public class Server {
 					
 					if (key.isReadable())
 					{
-						System.out.println("Key is Readable");
+						//System.out.println("Key is Readable");
 						
 						SocketChannel clientChannel = (SocketChannel) key.channel();
 						this.doEcho("readable", clientChannel);
@@ -92,7 +92,7 @@ public class Server {
 					
 					if (key.isWritable())
 					{
-						System.out.println("Key is Writable");
+						//System.out.println("Key is Writable");
 						
 						SocketChannel clientChannel = (SocketChannel) key.channel();
 						this.doEcho("writable", clientChannel);
@@ -111,7 +111,7 @@ public class Server {
 	public void doEcho(String evt, SocketChannel socket) throws IOException {
 		String msg = this.readMessage(socket);
 		if (msg.length() <= 0) return;
-		if (msg.trim().equals("quit")) socket.close();
+		//if (msg.trim().equals("quit")) socket.close();
 		if (msg.trim().equals("Time goes fast.")) {
 			System.out.println("key is " + evt + " -> " + msg.trim());
 			this.writeMessage(socket, "Blabla");
