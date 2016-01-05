@@ -8,83 +8,53 @@ import javax.swing.SwingUtilities;
 
 import ui.GameFrame;
 
-public class Game {
-	protected Grid grid;
-	protected Grid copy;
-	protected Player player;
-	protected Random rnd;
-	protected GameFrame frame;
+public class Game 
+{
 
-	public Game(Player player) {
-		grid = new Grid();
+	protected Grid copy;
+	protected Random rnd;
+
+	public Game() 
+	{
 		copy = new Grid();
-		this.player = player;
 		rnd = new Random();
 	}
 
-	public void setSeed(long seed) {
+	public void setSeed(long seed) 
+	{
 		rnd.setSeed(seed);
 	}
 
-	public void play() {
-		addRandomTile();
-		addRandomTile();
-		while (!grid.gameOver()) {
+
+	public void play(Direction dir, Grid grid) 
+	{
+		if (!grid.gameOver()) {
 			grid.getCopy(copy);
-			Direction dir = player.selectDirection(copy);
-			if (grid.move(dir))
-				addRandomTile();
-		}
-	}
-	
-	public void playWithUI() {
-		addRandomTile();
-		addRandomTile();
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				prepareFrame();
-			}
-		});
-		while (!grid.gameOver()) {
-			grid.getCopy(copy);
-			Direction dir = player.selectDirection(copy);
 			if (grid.move(dir)) {
-				addRandomTile();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						frame.update(grid);
-					}
-				});
-			}
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
+				addRandomTile(grid);
+	}
+			try 
+			{
+				Thread.sleep(200);
+			} catch (InterruptedException e) 
+			{
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public int getScore() {
+	public int getScore(Grid grid) 
+	{
 		return grid.getScore();
 	}
 
-	protected void addRandomTile() {
+
+	
+	public void addRandomTile(Grid grid) 
+	{
 		grid.addValue(rnd.nextDouble() < 0.9 ? 2 : 4,
 				rnd.nextInt(grid.getEmptyCount()));
 	}
 	
-	protected void addRandomTile(Grid grid) {
-		grid.addValue(rnd.nextDouble() < 0.9 ? 2 : 4,
-				rnd.nextInt(grid.getEmptyCount()));
-	}
-	
-	protected void prepareFrame() {
-		frame = new GameFrame(grid.getSize());
-		frame.addComponents();
-		frame.update(grid);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		frame.pack();
-		frame.setVisible(true);
-	}
+
 }
