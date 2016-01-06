@@ -1,9 +1,9 @@
 package Server;
 
-import gameModel.Direction;
+
 import gameModel.Grid;
 import gameModel.Game;
-
+import gameModel.*;
 
 import java.util.HashMap;
 
