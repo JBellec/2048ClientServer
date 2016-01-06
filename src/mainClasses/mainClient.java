@@ -16,6 +16,13 @@ public class mainClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		try {
+			new Client(8189);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

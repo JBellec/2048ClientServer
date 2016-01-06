@@ -53,14 +53,12 @@ public class Client {
 		for (int i = 0; i < size*size; i++ ) 
 		{
 			values[i/size][i%size] = Integer.parseInt(test[i]);
-			System.out.println(values[i/size][i%size] + " = " + Integer.parseInt(test[i]));
+			//System.out.println(values[i/size][i%size] + " = " + Integer.parseInt(test[i]));
 		}
 		
 		int index = Integer.parseInt(test[test.length-2]);
 		this.controller = new ClientController(size, values, this, index);
-		//int size = Integer.parseInt(res.trim());
-		//System.out.println(size);
-        
+	
 		
 		/*
 		// request defaultValues
@@ -92,6 +90,7 @@ public class Client {
 	
 	
 	public void sendDown() throws IOException{
+		System.out.println("SEND DOWN");
 		byte [] downBuff = new String("down").getBytes();
 		ByteBuffer buffer = ByteBuffer.wrap(downBuff);
         this.socket.write(buffer);
@@ -145,6 +144,10 @@ public class Client {
 		  System.out.println(res);*/
     }
     
+    public SocketChannel getSocket()
+    {
+    	return this.socket;
+    }
     
     public void sendDirection()
     {

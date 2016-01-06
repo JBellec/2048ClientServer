@@ -126,7 +126,6 @@ public class Server {
 		if (msg.trim().equals("getSize")) 
 		{
 			
-			System.out.println("getSize");
 			String res = sc.addClient(socket).toString();
 			System.out.println(res);
 			this.writeMessage(socket, res);

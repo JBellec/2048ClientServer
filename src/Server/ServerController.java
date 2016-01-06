@@ -3,18 +3,15 @@ package Server;
 
 import gameModel.*;
 
-import java.io.IOException;
+
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 
-import Client.Client;
 
 public class ServerController 
 {
 	private static final int SIZE = 4;
-
 	private Game model;
-	//private ArrayList<Grid> clientsGrid;
 	private HashMap<Integer, Grid> clientsGrid;
 	private int[] values;
 	private int index;
