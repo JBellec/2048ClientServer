@@ -6,6 +6,7 @@ import gameModel.Direction;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -63,7 +64,22 @@ public class ClientController
 	
 	private void sendMove(Direction dir) 
 	{
+		switch (dir) {
+		case DOWN:
+			try {
+				client.sendDown();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+
+		default:
+			break;
+		}
 		//demande au Client d'envoyer au serveur move(dir)
+		
+		//client.sendGetScore
 	}
 	
 	private void update(int[][] values, int score) 
