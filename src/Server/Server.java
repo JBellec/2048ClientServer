@@ -26,7 +26,9 @@ public class Server {
 	//The selector we'll be monitoring
 	private Selector selector;
 	private String messages = "message";
-
+	
+	private ServerController sc;
+	
 	public Server()
 	{
 		this(DEFAULT_PORT);
@@ -48,6 +50,7 @@ public class Server {
 		System.out.println(ia);
 		InetSocketAddress isa = new InetSocketAddress(ia,this.port);
 		this.serverChannel.socket().bind(isa);
+		sc = new ServerController(this);
 	}
 	
 	public void start() throws IOException
@@ -72,7 +75,7 @@ public class Server {
 					
 					if(key.isAcceptable())
 					{
-				//		System.out.println("Key is Acceptable");
+						System.out.println("Key is Acceptable");
 						 ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
 						 SocketChannel socket = (SocketChannel) ssc.accept();
 						 socket.configureBlocking(false);
@@ -111,16 +114,24 @@ public class Server {
 	public void doEcho(String evt, SocketChannel socket) throws IOException {
 		String msg = this.readMessage(socket);
 		if (msg.length() <= 0) return;
-		if (msg.trim().equals("quit")) socket.close();
-		if (msg.trim().equals("Time goes fast.")) {
-	//		System.out.println("key is " + evt + " -> " + msg.trim());
-			this.writeMessage(socket, "Blabla");
+		if (msg.trim().equals("quit")) 
+			System.out.println("key is " + evt + " -> " + msg.trim());;
+		if (msg.trim().equals("Time goes fast.")) 
+		{
 			
-			if (msg.trim().equals("getSize")) 
-			{
-				this.writeMessage(socket, "4,1,2,3,15,16,10");
-			}
+			System.out.println("key is " + evt + " -> " + msg.trim());
+			//this.writeMessage(socket, "Blabla");
 		}
+		
+		if (msg.trim().equals("getSize")) 
+		{
+			
+			System.out.println("getSize");
+			String res = sc.addClient(socket).toString();
+			System.out.println(res);
+			this.writeMessage(socket, res);
+		}
+		
 	}
 	public void writeMessage(SocketChannel socket, String msg) throws IOException {
 		  ByteBuffer buffer = ByteBuffer.wrap((msg.getBytes()));

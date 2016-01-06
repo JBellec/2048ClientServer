@@ -16,11 +16,11 @@ public class Client {
 	private final int port;
 	private SocketChannel socket;
 	
-	public static final int DEFAULT_PORT = 8189;
+	/*public static final int DEFAULT_PORT = 8189;
 	
 	public Client() throws IOException {
 		this(DEFAULT_PORT);
-	}
+	}*/
 	
 	public Client(int port) throws IOException
 	{
@@ -35,6 +35,8 @@ public class Client {
         byte [] sizeBuff = new String("getSize").getBytes();
         ByteBuffer buffer = ByteBuffer.wrap(sizeBuff);
         this.socket.write(buffer);
+        
+        System.out.println("getSize sent");
         // receive size from server
         ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
 		int nBytes = this.socket.read(rcvbuf);
@@ -42,15 +44,20 @@ public class Client {
 		Charset charset = Charset.forName("us-ascii");
 		CharsetDecoder decoder = charset.newDecoder();
 		String res = decoder.decode(rcvbuf).toString();
-		
+		System.out.println("coucou " + res);
 		String[] test = res.split(",");
 		
+		int size = Integer.parseInt(test[(test.length-1)]);
 		
-		for (String string : test) 
+		int[][] values = new int[size][size];
+		for (int i = 0; i < size*size; i++ ) 
 		{
-			System.out.println(string);
+			values[i/size][i%size] = Integer.parseInt(test[i]);
+			System.out.println(values[i/size][i%size] + " = " + Integer.parseInt(test[i]));
 		}
 		
+		int index = Integer.parseInt(test[test.length-2]);
+		this.controller = new ClientController(size, values, this, index);
 		//int size = Integer.parseInt(res.trim());
 		//System.out.println(size);
         
@@ -73,7 +80,7 @@ public class Client {
 				 values.get(array);
 		// soit changer le int[] array = new... soit changer le format de values
 		
-		this.controller = new ClientController(size, values, this);
+		
 		
 		*/
 		
@@ -104,17 +111,18 @@ public class Client {
 
     public static void main (String [] args)
             throws IOException, InterruptedException {
-
-    	
     	new Client(8189);
-       /* InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getLocalHost(), 8189);
+    	
+    	/*
+    	
+        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getLocalHost(), 8189);
         SocketChannel client = SocketChannel.open(hostAddress);
 
         System.out.println("Client sending messages to server...");
 
         // Send messages to server
 		
-        String [] messages = new String [] {"Time goes fast.", "What now?"};
+        String [] messages = new String [] {"Time goes fast.", "What now?", "getSize"};
 
         for (int i = 0; i < messages.length; i++) {
 

@@ -1,10 +1,10 @@
 package Server;
 
 
-import gameModel.Grid;
-import gameModel.Game;
 import gameModel.*;
 
+import java.io.IOException;
+import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 
 import Client.Client;
@@ -16,18 +16,22 @@ public class ServerController
 	private Game model;
 	//private ArrayList<Grid> clientsGrid;
 	private HashMap<Integer, Grid> clientsGrid;
-	private int[][] values;
+	private int[] values;
 	private int index;
-
-	public ServerController() 
+	private Server server;
+	
+	public ServerController(Server server) 
 	{
-		this.values = new int[SIZE][SIZE];
+		this.clientsGrid = new HashMap<Integer, Grid>();
+		this.values = new int[SIZE*SIZE];
 		this.model = new Game();
 		this.index = 0;
+		this.server = server;
 	}
 
-	private void addClient() 
+	public StringBuffer addClient(SocketChannel socket) 
 	{
+		this.index++;
 		//initialise the grid for the new client)
 		clientsGrid.put(this.index, new Grid());
 		model.addRandomTile(clientsGrid.get(this.index));
@@ -35,23 +39,29 @@ public class ServerController
 		
 		
 		
-		sendInit(this.index);
-		this.index++;
+		return sendInit(this.index, socket);
+		
+		
 	}
 
-	private void sendInit(int index) 
+	private StringBuffer sendInit(int index, SocketChannel socket) 
 	{
 		// TODO Auto-generated method stub
 		Grid clientGrid = clientsGrid.get(index);
 		copyGridValues(clientGrid);
 
-		sendSizeAndValues(SIZE, this.values, index);
+		return sendSizeAndValues(SIZE, this.values, index, socket);
 	}
 
-	private void sendSizeAndValues(int gridSize, int[][] clientValues, int index) 
+	private StringBuffer sendSizeAndValues(int gridSize, int[] values, int index, SocketChannel socket) 
 	{
-		// TODO Auto-generated method stub
-		// envoyer au client via le serveur gridSize et clientValues ainsi que l'index du client
+		StringBuffer toSend = new StringBuffer();
+		for (int i = 0 ; i < values.length; i++ )
+		{
+			toSend.append(values[i]+",");
+		}
+		toSend.append(index+","+gridSize);
+		return toSend;
 	}
 
 	
@@ -69,7 +79,7 @@ public class ServerController
 		}
 	}
 
-	private void sendToClient(int[][] gridValues, int score) 
+	private void sendToClient(int[] values, int score) 
 	{
 		// TODO Auto-generated method stub
 		// envoi au client les nouvelles valeurs à afficher et le score
@@ -82,7 +92,7 @@ public class ServerController
 		{
 			for (int x = 0; x < SIZE; x++) 
 			{
-				this.values[x][y] = grid.getValue(x, y);
+				this.values[x+y] = grid.getValue(x, y);
 			}
 		}
 	}

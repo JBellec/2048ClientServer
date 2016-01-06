@@ -17,11 +17,13 @@ public class ClientController
 	
 	private GameFrame frame;
 	private Client client;
+	private int index;
 	
-	public ClientController(int size, int[][] values, Client client)
+	public ClientController(int size, int[][] values, Client client, int index)
 	{
 		
 		this.client = client;
+		this.index = index;
 		
 		frame = new GameFrame(size);
 		frame.addComponents();
