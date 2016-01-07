@@ -11,6 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+/**
+ * This is the frame of our game
+ * @author Julien Bellec & Paul Bourgeois
+ *
+ */
 public class GameFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private int size;

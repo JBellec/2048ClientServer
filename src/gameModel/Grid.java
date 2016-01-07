@@ -1,5 +1,9 @@
 package gameModel;
-
+/**
+ * the model of the grid of the game
+ * @author Julien Bellec & Paul Bourgeois
+ *
+ */
 public class Grid {
 	private static final int SIZE = 4;
 

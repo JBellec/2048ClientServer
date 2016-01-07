@@ -8,6 +8,11 @@ import javax.swing.SwingUtilities;
 
 import ui.GameFrame;
 
+/**
+ * Our game Model
+ * @author Julien Bellec & Paul Bourgeois
+ *
+ */
 public class Game 
 {
 
@@ -20,12 +25,13 @@ public class Game
 		rnd = new Random();
 	}
 
-	public void setSeed(long seed) 
-	{
-		rnd.setSeed(seed);
-	}
 
 
+	/**
+	 * Move the tiles of the grid in dir direction then add an random tile in the grid
+	 * @param dir : 	the choosen direction
+	 * @param grid :	the choosen grid
+	 */
 	public void play(Direction dir, Grid grid) 
 	{
 		if (!grid.gameOver()) {
@@ -43,13 +49,21 @@ public class Game
 		}
 	}
 
+	/**
+	 * gives the current score of the grid
+	 * @param grid
+	 * @return the score of the grid
+	 */
 	public int getScore(Grid grid) 
 	{
 		return grid.getScore();
 	}
 
 
-	
+	/**
+	 *  add a random tile in the grid
+	 * @param grid
+	 */
 	public void addRandomTile(Grid grid) 
 	{
 		grid.addValue(rnd.nextDouble() < 0.9 ? 2 : 4,

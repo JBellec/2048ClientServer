@@ -7,6 +7,11 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+/**
+ * This is the label of the cell used in our gameframe
+ * @author Julien Bellec & Paul Bourgeois
+ *
+ */
 public class Cell extends JLabel {
 	private static final long serialVersionUID = 1L;
 	private static final Dimension PREFERRED_SIZE = new Dimension(100, 100);

@@ -15,15 +15,20 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.Iterator;
 
+/**
+ * This class is the main class of our Server
+ * @author Julien Bellec & Paul Bourgeois
+ *
+ */
 public class Server {
 	
 	public static final int DEFAULT_PORT = 8189;
 	private int port;
 	
-	//The channel on wich we'll accept connections
+	/* --The channel on wich we'll accept connections --*/
 	private ServerSocketChannel serverChannel;
 	
-	//The selector we'll be monitoring
+	/*-- The selector we'll be monitoring --*/
 	private Selector selector;
 	private String messages = "message";
 	
@@ -38,7 +43,10 @@ public class Server {
 		this.port = port;
 	}
 	
-	
+	/**
+	 * prepare the server socket and server controller
+	 * @throws IOException
+	 */
 	public void setup() throws IOException
 	{
 		this.selector = Selector.open();
@@ -118,28 +126,37 @@ public class Server {
 		if (msg.trim().equals("getSize")) 
 		{
 			String res = this.sc.addClient().toString();
-			System.out.println(res);
+			//System.out.println(res);
 			this.writeMessage(socket, res);
 		}
 		
 		
 		if (msg.trim().startsWith("move")) 
 		{
-			String gotString = msg.trim();
-			System.out.println(gotString);
-			String eraseMove = gotString.replace("move,", "");
-			System.out.println(eraseMove);
-			
-			String res = (this.sc.move(eraseMove).toString());
+			String res = (this.sc.move(msg.trim()).toString());
 			this.writeMessage(socket, res);
 		}
 		
 		
 	}
+	
+	/**
+	 * 
+	 * @param socket : the socket on which we will send the message
+	 * @param msg : the message to send
+	 * @throws IOException
+	 */
 	public void writeMessage(SocketChannel socket, String msg) throws IOException {
 		  ByteBuffer buffer = ByteBuffer.wrap((msg.getBytes()));
 		  int nBytes = socket.write(buffer);
 		}
+	
+	/**
+	 * this method is used to read incoming messages from clients
+	 * @param socket
+	 * @return
+	 * @throws IOException
+	 */
 	public String readMessage(SocketChannel socket) throws IOException {
 		  ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
 		  int nBytes = socket.read(rcvbuf);

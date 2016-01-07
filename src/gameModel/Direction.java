@@ -1,5 +1,10 @@
 package gameModel;
 
+/**
+ * An Enum of the 4 different Directions used in the game
+ * @author Julien Bellec & Paul Bourgeois
+ *
+ */
 public enum Direction {
 	UP(0, -1), 
 	DOWN(0, 1), 
@@ -22,6 +27,12 @@ public enum Direction {
 		return y;
 	}
 	
+	
+	/**
+	 * A parser used to convert a String to a Direction
+	 * @param direction :	A String
+	 * @return	a Direction
+	 */
 	public static Direction parseDir(String direction)
 	{
 		switch(direction)
