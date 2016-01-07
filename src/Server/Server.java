@@ -117,18 +117,20 @@ public class Server {
 		
 		if (msg.trim().equals("getSize")) 
 		{
-			String res = this.sc.addClient(socket).toString();
+			String res = this.sc.addClient().toString();
 			System.out.println(res);
 			this.writeMessage(socket, res);
 		}
+		
+		
 		if (msg.trim().startsWith("move")) 
 		{
 			String gotString = msg.trim();
 			System.out.println(gotString);
-			gotString.replace("move,", "");
-			System.out.println(gotString);
-			String res;
-			res = (this.sc.move(gotString).toString());
+			String eraseMove = gotString.replace("move,", "");
+			System.out.println(eraseMove);
+			
+			String res = (this.sc.move(eraseMove).toString());
 			this.writeMessage(socket, res);
 		}
 		

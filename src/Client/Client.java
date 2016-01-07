@@ -19,11 +19,7 @@ public class Client {
 	private final int port;
 	private SocketChannel socket;
 	
-	/*public static final int DEFAULT_PORT = 8189;
-	
-	public Client() throws IOException {
-		this(DEFAULT_PORT);
-	}*/
+
 	
 	public Client(int port) throws IOException
 	{
@@ -48,7 +44,7 @@ public class Client {
 		Charset charset = Charset.forName("us-ascii");
 		CharsetDecoder decoder = charset.newDecoder();
 		String res = decoder.decode(rcvbuf).toString();
-		//System.out.println("coucou " + res);
+		System.out.println(res);
 		
 		//Split the string received
 		String[] test = res.split(",");
@@ -64,31 +60,10 @@ public class Client {
 		this.controller = new ClientController(size, values, this, index);
 	
 		
-		/*
-		// request defaultValues
-		byte [] defaultValBuff = new String("getDefaultVal").getBytes();
-	    buffer.clear();
-	    buffer = ByteBuffer.wrap(defaultValBuff);
-	    this.socket.write(buffer);
-        // receive defVal from server
-        rcvbuf = ByteBuffer.allocate(1024);
-		nBytes = this.socket.read(rcvbuf);
-		rcvbuf.flip();  
-		IntBuffer values =
-				   ByteBuffer.wrap(rcvbuf.array())
-				     .order(ByteOrder.BIG_ENDIAN)
-				     .asIntBuffer();
-				 int[] array = new int[values.remaining()]; // ne marche que si le tableau est un tableau simple et pas un [][]
-				 values.get(array);
-		// soit changer le int[] array = new... soit changer le format de values
+
 		
 		
-		
-		*/
-		
-		
-		// client initialisé et prèt a etre utilisé
-		// la maj en fonction des directions est presque la meme operation
+		// client initialised and ready for use
 	}
 	
 	
@@ -127,39 +102,10 @@ public class Client {
 	}
 
     public static void main (String [] args)
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException 
+    {
     	new Client(8189);
     	
-    	/*
-    	
-        InetSocketAddress hostAddress = new InetSocketAddress(InetAddress.getLocalHost(), 8189);
-        SocketChannel client = SocketChannel.open(hostAddress);
-
-        System.out.println("Client sending messages to server...");
-
-        // Send messages to server
-		
-        String [] messages = new String [] {"Time goes fast.", "What now?", "getSize"};
-
-        for (int i = 0; i < messages.length; i++) {
-
-            byte [] message = new String(messages [i]).getBytes();
-            ByteBuffer buffer = ByteBuffer.wrap(message);
-            client.write(buffer);
-
-            System.out.println(messages [i]);
-            buffer.clear();
-            Thread.sleep(3000);
-        }
-        
-        // lecture sur la socketchannel
-        ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
-		  int nBytes = client.read(rcvbuf);
-		  rcvbuf.flip();
-		  Charset charset = Charset.forName("us-ascii");
-		  CharsetDecoder decoder = charset.newDecoder();
-		  String res = decoder.decode(rcvbuf).toString();
-		  System.out.println(res);*/
     }
     
     public SocketChannel getSocket()
@@ -174,7 +120,7 @@ public class Client {
 		// TODO Auto-generated method stub
 		System.out.println(dir.toString());
 		StringBuffer direction = new StringBuffer();
-		direction.append("move,"+index+","+dir.toString());
+		direction.append("move,"+index+","+dir.toString().toLowerCase());
 		byte [] directionBuff = direction.toString().getBytes();
         ByteBuffer buffer = ByteBuffer.wrap(directionBuff);
         try {
@@ -199,6 +145,7 @@ public class Client {
 		try 
 		{
 			String res = decoder.decode(rcvbuf).toString();
+			System.out.println(res);
 			//Split the string received
 			String[] test = res.split(",");
 			int[][] newValues = getValues(test, size);
@@ -213,12 +160,7 @@ public class Client {
 		
 	}
     
-   /* public void sendDirection() throws IOException
-    {
-    	byte [] sizeBuff = new String("getSize").getBytes();
-        ByteBuffer buffer = ByteBuffer.wrap(sizeBuff);
-        this.socket.write(buffer);
-    }*/
+
 
 
 

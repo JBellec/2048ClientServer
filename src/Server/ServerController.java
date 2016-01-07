@@ -25,7 +25,7 @@ public class ServerController
 		this.server = server;
 	}
 
-	public StringBuffer addClient(SocketChannel socket) 
+	public StringBuffer addClient() 
 	{
 		this.index++;
 		//initialise the grid for the new client)
@@ -35,56 +35,57 @@ public class ServerController
 		
 		
 		
-		return sendInit(this.index, socket);
+		return sendInit(this.index);
 		
 		
 	}
 
-	private StringBuffer sendInit(int index, SocketChannel socket) 
+	private StringBuffer sendInit(int index) 
 	{
 		// TODO Auto-generated method stub
 		Grid clientGrid = clientsGrid.get(index);
-		copyGridValues(clientGrid);
+		
 
-		return sendSizeAndValues(SIZE, this.values, index, socket);
-	}
-
-	private StringBuffer sendSizeAndValues(int gridSize, int[] values, int index, SocketChannel socket) 
-	{
-		StringBuffer toSend = new StringBuffer();
-		for (int i = 0 ; i < values.length; i++ )
-		{
-			toSend.append(values[i]+",");
-		}
-		toSend.append(index+","+gridSize);
-		return toSend;
+		return sendSizeAndValues(copyGridValues(clientGrid), index);
 	}
 
 	
 	
+	private StringBuffer sendSizeAndValues(StringBuffer buffer, int index) 
+	{
+		
+		buffer.append(index+","+SIZE);
+		System.out.println(buffer.toString());
+		return buffer;
+	}
+
 	
 
 
-
-
-	// copy the grid values in this.values
-	private void copyGridValues(Grid grid) 
+	// copy the grid values in a Buffer
+	private StringBuffer copyGridValues(Grid grid) 
 	{
+		StringBuffer result = new StringBuffer();
 		for (int y = 0; y < SIZE; y++) 
 		{
 			for (int x = 0; x < SIZE; x++) 
 			{
-				this.values[x+y] = grid.getValue(x, y);
+				//this.values[x+(y*4)] = grid.getValue(y, x);
+				//System.out.println(grid.getValue(x,y)+ " = " +this.values[x+y]);
+				result.append(grid.getValue(x, y)+",");
 			}
 		}
+		return result;
 	}
 
 	
 	
 	public StringBuffer move(String res) 
 	{
+		System.out.println("result = " + res);
 		String[] result = res.split(",");
-		return (moveReceived(Direction.parseDir(result[0]), Integer.parseInt(result[1].toString())));
+		System.out.println("you are moving to the : " + result[1]);
+		return (moveReceived(Direction.parseDir(result[1].toLowerCase()), Integer.parseInt(result[0].toString())));
 		
 	}
 	
@@ -95,13 +96,10 @@ public class ServerController
 		{
 			Grid grid = clientsGrid.get(gridIndex);
 			model.play(dir, grid);
-			copyGridValues(grid);
-			//sendToClient(this.values, model.getScore(grid));
-			for (int i = 0 ; i < values.length; i++ )
-			{
-				toSend.append(values[i]+",");
-			}
-			toSend.append(model.getScore(grid));
+			StringBuffer result = copyGridValues(grid);
+			
+			result.append(model.getScore(grid));
+			return result;
 		}
 		return toSend;
 		

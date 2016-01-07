@@ -24,15 +24,18 @@ public enum Direction {
 	
 	public static Direction parseDir(String direction)
 	{
-		switch(direction){
-		case "UP":
+		switch(direction)
+		{
+		case "up":
 			return UP;
-		case "DOWN":
+		case "down":
 			return DOWN;
-		case "RIGHT":
+		case "right":
 			return RIGHT;
-		default:
+		case "left":
 			return LEFT;
+		default :
+			return UP;
 		}
 		
 	}

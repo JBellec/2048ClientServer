@@ -55,7 +55,7 @@ public class GameFrame extends JFrame {
 		// TODO Auto-generated method stub
 		for (int y = 0; y < size; y++)
 			for (int x = 0; x < size; x++)
-				cells[y][x].setValue(values[x][y]);
+				cells[x][y].setValue(values[x][y]);
 		scoreLabel.setText("Score: " + score);
 	}
 }
