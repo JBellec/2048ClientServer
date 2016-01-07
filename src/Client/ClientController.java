@@ -20,14 +20,15 @@ public class ClientController
 	private GameFrame frame;
 	private Client client;
 	private int index;
+	private int size;
 	
 	public ClientController(int size, int[][] values, Client client, int index)
 	{
 		
 		this.client = client;
 		this.index = index;
-		
-		frame = new GameFrame(size);
+		this.size = size;
+		frame = new GameFrame(this.size);
 		frame.addComponents();
 		frame.update(values, 0);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,6 +65,12 @@ public class ClientController
 		        	sendMove(Direction.RIGHT);
 		        	break;
 		        }
+		        try {
+					Thread.sleep(200);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 		    }
 		});
 	}
@@ -106,27 +113,13 @@ public class ClientController
 	
 	
 	
-	private void sendMove(Direction dir) 
+	private void sendMove(Direction dir)  
 	{
-		switch (dir) {
-		case DOWN:
-			try {
-				client.sendDown();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-
-		default:
-			break;
-		}
-		//demande au Client d'envoyer au serveur move(dir)
-		
+		client.sendDirection(dir, this.index, this.size);
 		//client.sendGetScore
 	}
 	
-	private void update(int[][] values, int score) 
+	public void update(int[][] values, int score) 
 	{
 			frame.update(values, score);
 	}

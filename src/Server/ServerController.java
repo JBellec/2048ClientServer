@@ -3,7 +3,6 @@ package Server;
 
 import gameModel.*;
 
-
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 
@@ -64,23 +63,9 @@ public class ServerController
 	
 	
 	
-	private void moveReceived(Direction dir, int gridIndex) 
-	{
-		if (clientsGrid.containsKey(gridIndex)) 
-		{
-			Grid grid = clientsGrid.get(gridIndex);
-			model.play(dir, grid);
-			copyGridValues(grid);
-			sendToClient(this.values, model.getScore(grid));
-			
-		}
-	}
 
-	private void sendToClient(int[] values, int score) 
-	{
-		// TODO Auto-generated method stub
-		// envoi au client les nouvelles valeurs à afficher et le score
-	}
+
+
 
 	// copy the grid values in this.values
 	private void copyGridValues(Grid grid) 
@@ -92,5 +77,33 @@ public class ServerController
 				this.values[x+y] = grid.getValue(x, y);
 			}
 		}
+	}
+
+	
+	
+	public StringBuffer move(String res) 
+	{
+		String[] result = res.split(",");
+		return (moveReceived(Direction.parseDir(result[0]), Integer.parseInt(result[1].toString())));
+		
+	}
+	
+	private StringBuffer moveReceived(Direction dir, int gridIndex) 
+	{
+		StringBuffer toSend = new StringBuffer();
+		if (clientsGrid.containsKey(gridIndex)) 
+		{
+			Grid grid = clientsGrid.get(gridIndex);
+			model.play(dir, grid);
+			copyGridValues(grid);
+			//sendToClient(this.values, model.getScore(grid));
+			for (int i = 0 ; i < values.length; i++ )
+			{
+				toSend.append(values[i]+",");
+			}
+			toSend.append(model.getScore(grid));
+		}
+		return toSend;
+		
 	}
 }

@@ -21,4 +21,19 @@ public enum Direction {
 	public int getY() {
 		return y;
 	}
+	
+	public static Direction parseDir(String direction)
+	{
+		switch(direction){
+		case "UP":
+			return UP;
+		case "DOWN":
+			return DOWN;
+		case "RIGHT":
+			return RIGHT;
+		default:
+			return LEFT;
+		}
+		
+	}
 }

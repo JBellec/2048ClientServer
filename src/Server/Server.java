@@ -114,22 +114,24 @@ public class Server {
 	public void doEcho(String evt, SocketChannel socket) throws IOException {
 		String msg = this.readMessage(socket);
 		if (msg.length() <= 0) return;
-		if (msg.trim().equals("quit")) 
-			System.out.println("key is " + evt + " -> " + msg.trim());;
-		if (msg.trim().equals("Time goes fast.")) 
-		{
-			
-			System.out.println("key is " + evt + " -> " + msg.trim());
-			//this.writeMessage(socket, "Blabla");
-		}
 		
 		if (msg.trim().equals("getSize")) 
 		{
-			
-			String res = sc.addClient(socket).toString();
+			String res = this.sc.addClient(socket).toString();
 			System.out.println(res);
 			this.writeMessage(socket, res);
 		}
+		if (msg.trim().startsWith("move")) 
+		{
+			String gotString = msg.trim();
+			System.out.println(gotString);
+			gotString.replace("move,", "");
+			System.out.println(gotString);
+			String res;
+			res = (this.sc.move(gotString).toString());
+			this.writeMessage(socket, res);
+		}
+		
 		
 	}
 	public void writeMessage(SocketChannel socket, String msg) throws IOException {

@@ -1,6 +1,9 @@
 package Client;
 
+import gameModel.Direction;
+
 import java.nio.channels.SocketChannel;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.ByteBuffer;
@@ -37,24 +40,25 @@ public class Client {
         this.socket.write(buffer);
         
         System.out.println("getSize sent");
-        // receive size from server
+        
+        // receive size, values of the grid and index of the grid from server
         ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
 		int nBytes = this.socket.read(rcvbuf);
 		rcvbuf.flip();  
 		Charset charset = Charset.forName("us-ascii");
 		CharsetDecoder decoder = charset.newDecoder();
 		String res = decoder.decode(rcvbuf).toString();
-		System.out.println("coucou " + res);
+		//System.out.println("coucou " + res);
+		
+		//Split the string received
 		String[] test = res.split(",");
 		
+		//get the different values and use it to initiate the client controller
 		int size = Integer.parseInt(test[(test.length-1)]);
 		
-		int[][] values = new int[size][size];
-		for (int i = 0; i < size*size; i++ ) 
-		{
-			values[i/size][i%size] = Integer.parseInt(test[i]);
-			//System.out.println(values[i/size][i%size] + " = " + Integer.parseInt(test[i]));
-		}
+		
+		int[][] values = getValues(test,size);
+		
 		
 		int index = Integer.parseInt(test[test.length-2]);
 		this.controller = new ClientController(size, values, this, index);
@@ -88,7 +92,21 @@ public class Client {
 	}
 	
 	
-	
+	//return the values of the grid sent by the server which are in test String
+	private int[][] getValues(String[] test, int size) 
+	{
+		int[][] res = new int[size][size];
+		for (int i = 0; i < size*size; i++ ) 
+		{
+			res[i/size][i%size] = Integer.parseInt(test[i]);
+			//System.out.println(values[i/size][i%size] + " = " + Integer.parseInt(test[i]));
+		}
+		
+		return res;
+	}
+
+
+
 	public void sendDown() throws IOException{
 		System.out.println("SEND DOWN");
 		byte [] downBuff = new String("down").getBytes();
@@ -148,9 +166,61 @@ public class Client {
     {
     	return this.socket;
     }
+
+
+
+	public void sendDirection(Direction dir, int index, int size) 
+	{
+		// TODO Auto-generated method stub
+		System.out.println(dir.toString());
+		StringBuffer direction = new StringBuffer();
+		direction.append("move,"+index+","+dir.toString());
+		byte [] directionBuff = direction.toString().getBytes();
+        ByteBuffer buffer = ByteBuffer.wrap(directionBuff);
+        try {
+			this.socket.write(buffer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        ByteBuffer rcvbuf = ByteBuffer.allocate(1024);
+		try 
+		{
+			int nBytes = this.socket.read(rcvbuf);
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		rcvbuf.flip();  
+		Charset charset = Charset.forName("us-ascii");
+		CharsetDecoder decoder = charset.newDecoder();
+		try 
+		{
+			String res = decoder.decode(rcvbuf).toString();
+			//Split the string received
+			String[] test = res.split(",");
+			int[][] newValues = getValues(test, size);
+			int score = Integer.parseInt(test[test.length-1]);
+			this.controller.update(newValues, score);
+		} catch (CharacterCodingException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
     
-    public void sendDirection()
+   /* public void sendDirection() throws IOException
     {
-    	
-    }
+    	byte [] sizeBuff = new String("getSize").getBytes();
+        ByteBuffer buffer = ByteBuffer.wrap(sizeBuff);
+        this.socket.write(buffer);
+    }*/
+
+
+
+
 }
