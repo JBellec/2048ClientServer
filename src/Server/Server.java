@@ -137,6 +137,11 @@ public class Server {
 			this.writeMessage(socket, res);
 		}
 		
+		if (msg.trim().startsWith("newGame")) 
+		{
+			this.sc.resetGrid(msg.trim());
+		}
+		
 		
 	}
 	

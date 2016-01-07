@@ -137,4 +137,18 @@ public class Grid {
 		}
 		return s;
 	}
+
+	
+	public void setGridValues(int[] newGridValues) 
+	{
+		this.score = 0;
+		for (int x = 0; x < SIZE*SIZE; x++)
+		{
+				values[x%SIZE][x/SIZE] = newGridValues[x];
+				System.out.println(values[x%SIZE][x/SIZE]);
+		}
+		for (int y = 0; y < SIZE; y++)
+			for (int x = 0; x < SIZE; x++)
+				System.out.println(values[x][y]);
+	}
 }

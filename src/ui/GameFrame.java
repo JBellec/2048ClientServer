@@ -8,8 +8,13 @@ import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+
+import Client.ClientController;
 
 /**
  * This is the frame of our game
@@ -21,13 +26,53 @@ public class GameFrame extends JFrame {
 	private int size;
 	private Cell[][] cells;
 	private JLabel scoreLabel;
-
-	public GameFrame(int size) {
+	private ClientController cc;
+	
+	public GameFrame(int size, ClientController clientController) 
+	{
 		super("2048");
 		this.size = size;
+		this.cc = clientController;
+	}
+
+	public GameFrame(int size) 
+	{
+		// TODO Auto-generated constructor stub
+		JPanel panel = new JPanel();
+		GridLayout layout = new GridLayout(size, size);
+		layout.setHgap(10);
+		layout.setVgap(10);
+		panel.setLayout(layout);
+		panel.setBackground(new Color(0xbb, 0xad, 0xa0));
+		cells = new Cell[size][size];
+		for (int y = 0; y < size; y++)
+			for (int x = 0; x < size; x++) {
+				cells[y][x] = new Cell();
+				cells[y][x].setValue(0);
+				panel.add(cells[y][x]);
+			}
+		scoreLabel = new JLabel("Score: 0");
+		getContentPane().add(scoreLabel, BorderLayout.NORTH);
+		getContentPane().add(new JSeparator(), BorderLayout.CENTER);
+		getContentPane().add(panel, BorderLayout.SOUTH);
 	}
 
 	public void addComponents() {
+		JMenuBar menuBar = new JMenuBar();
+		
+		JMenu menu = new JMenu("GameMenu");
+		
+		JMenuItem newGame = new JMenuItem(new NewGame(this.cc, "New Game"));
+		menu.add(newGame);
+		
+		JMenuItem quit = new JMenuItem(new QuitGame(this.cc, "Quit"));
+		menu.add(quit);
+		
+		menuBar.add(menu);
+		menu.add(newGame);
+		menu.add(quit);
+		
+		setJMenuBar(menuBar);
 		JPanel panel = new JPanel();
 		GridLayout layout = new GridLayout(size, size);
 		layout.setHgap(10);

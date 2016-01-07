@@ -120,4 +120,21 @@ public class ServerController
 		return toSend;
 		
 	}
+
+	public void resetGrid(String string) 
+	{
+		string = string.replace("newGame,", "");
+		String[] result = string.split(",");
+		
+		int gridIndex = Integer.parseInt(result[result.length-1]);
+		int[] newGridValues = new int[SIZE*SIZE];
+		for (int x = 0; x < SIZE *SIZE; x++)
+		{
+			newGridValues[x] = Integer.parseInt(result[x]);
+			System.out.println(newGridValues[x]);
+		}
+		if (clientsGrid.containsKey(gridIndex))
+				clientsGrid.get(gridIndex).setGridValues(newGridValues);
+		
+	}
 }

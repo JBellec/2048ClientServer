@@ -122,7 +122,7 @@ public class Client {
      */
 	public void sendDirection(Direction dir, int index, int size) 
 	{
-		System.out.println(dir.toString());
+		//System.out.println(dir.toString());
 		StringBuffer direction = new StringBuffer();
 		direction.append("move,"+index+","+dir.toString().toLowerCase());
 		byte [] directionBuff = direction.toString().getBytes();
@@ -161,8 +161,30 @@ public class Client {
 		
 		
 	}
+
+
+	public void sendNewGame(StringBuffer values, int index, int size) 
+	{
+		
+		sendMessage("newGame,"+values+','+index);
+		
+		
+	}
+	
+	
+    
+	public void sendMessage(String message)
+	{
+		byte [] byteBuff = message.toString().getBytes();
+		ByteBuffer buffer = ByteBuffer.wrap(byteBuff);
+		try {
+			this.socket.write(buffer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     
 
+	}
 
 
 

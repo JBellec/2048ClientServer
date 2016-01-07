@@ -39,13 +39,13 @@ public class Game
 			if (grid.move(dir)) {
 				addRandomTile(grid);
 	}
-			try 
+			/*try 
 			{
 				Thread.sleep(200);
 			} catch (InterruptedException e) 
 			{
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 

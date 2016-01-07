@@ -23,8 +23,8 @@ public class ClientController
 	private Client client;
 	private int index;
 	private int size;
-	
-	
+	private int[][] firstValues;
+	private StringBuffer firstValuesToStringBuffer;
 	/**
 	 * Initialise the frame of the game
 	 * @param size :	size of the game
@@ -38,7 +38,15 @@ public class ClientController
 		this.client = client;
 		this.index = index;
 		this.size = size;
-		frame = new GameFrame(this.size);
+		this.firstValues = values;
+		this.firstValuesToStringBuffer = new StringBuffer();
+		
+		for(int y = 0; y < this.size ; y ++)
+			for(int x = 0; x < this.size ; x++)
+				firstValuesToStringBuffer.append(values[x][y]+",");
+		
+		System.out.println(firstValuesToStringBuffer.toString());
+		frame = new GameFrame(this.size, this);
 		frame.addComponents();
 		frame.update(values, 0);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,7 +86,7 @@ public class ClientController
 		        	break;
 		        }
 		        try {
-					Thread.sleep(200);
+					Thread.sleep(100);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -146,6 +154,22 @@ public class ClientController
 	{
 			frame.update(values, score);
 	}
+
+
+	public Client getClient()
+	{
+		return this.client;
+	}
+
+
+	public void newGame() 
+	{
+		frame.update(this.firstValues,0);
+		
+		client.sendNewGame(this.firstValuesToStringBuffer, this.index, this.size);
+	}
+	
+
 	
 	
 }
