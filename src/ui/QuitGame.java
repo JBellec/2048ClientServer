@@ -1,14 +1,9 @@
 package ui;
 
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
-import javax.swing.Icon;
-
-import Client.Client;
 import Client.ClientController;
 
 public class QuitGame extends AbstractAction 
