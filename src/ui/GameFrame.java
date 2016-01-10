@@ -37,7 +37,7 @@ public class GameFrame extends JFrame {
 
 	public GameFrame(int size) 
 	{
-		// TODO Auto-generated constructor stub
+		this.size=size;
 		JPanel panel = new JPanel();
 		GridLayout layout = new GridLayout(size, size);
 		layout.setHgap(10);
